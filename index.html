@@ -232,10 +232,11 @@
                                         <li>累積貢獻度以解鎖借用權限</li>
                                     </ul>
                                 </li>
-                                <li><strong>交易結算 (Punch In)：</strong>
+                                <li><strong>交易打卡：</strong>
                                     <ul>
+                                        <li>觸發狀態轉換：Reservation ➔ Loan</li>
                                         <li>物主確認已交付物品</li>
-                                        <li>系統自動建立借出紀錄 (Loan)</li>
+                                        <li>物主確認借用人歸還</li>
                                     </ul>
                                 </li>
                             </ul>
@@ -409,62 +410,110 @@ def log_event(event_type, ...):
                     </section>
 				</section>
 
-                <!-- P6: 資料庫優化 -->
-				<section>
+                <!-- P9: 資料庫優化與索引 -->
+                <section>
                     <section>
                         <h2>資料庫優化與索引</h2>
-                        <div class="text-left">
-                            <ul>
-                                <li><strong>關鍵索引 (setindex.sql)：</strong></li>
-                            </ul>
-                            <pre><code class="sql" data-trim data-noescape>
--- 加速時段衝突檢查 (Overlap Check)
-CREATE INDEX idx_reservation_detail_time_range 
-ON reservation_detail(i_id, est_start_at, est_due_at);
+                        <p>針對高頻查詢與複雜邏輯的優化策略</p>
+                        <p class="small-text">按 ↓ 查看詳細策略</p>
+                    </section>
 
--- 加速分類遞迴查詢
-CREATE INDEX idx_category_parent_c_id ON category(parent_c_id);
-
--- 加速我的預約查詢
-CREATE INDEX idx_reservation_m_id ON reservation(m_id);
-                            </code></pre>
+                    <!-- Subslide 9.1: 索引策略對照表 -->
+                    <section>
+                        <h3>索引策略與應用場景</h3>
+                        <table style="font-size: 0.6em;">
+                            <thead>
+                                <tr>
+                                    <th>應用功能 (Feature)</th>
+                                    <th>查詢特徵 (Query Pattern)</th>
+                                    <th>建立索引 (Index)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>預約防撞檢查</strong><br><small>(最關鍵的高頻查詢)</small></td>
+                                    <td><code>WHERE i_id = ?</code><br><code>AND (start, end) OVERLAPS ...</code></td>
+                                    <td style="color: #42affa;"><strong>Compound Index</strong><br><code>(i_id, est_start_at, est_due_at)</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>分類瀏覽 (DFS)</strong><br><small>(遞迴查詢子類別)</small></td>
+                                    <td><code>JOIN ON parent_c_id</code><br>(Recursive CTE)</td>
+                                    <td style="color: #42affa;"><strong>Foreign Key Index</strong><br><code>(parent_c_id)</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>我的預約/物品</strong><br><small>(個人化頁面)</small></td>
+                                    <td><code>WHERE m_id = ?</code></td>
+                                    <td style="color: #42affa;"><strong>Foreign Key Index</strong><br><code>(m_id)</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-left fragment" style="font-size: 0.6em; margin-top: 20px; border-left: 3px solid #42affa; padding-left: 10px;">
+                            <p><strong>設計思維：</strong><br>
+                            我們針對系統中 Loading 最重的「時段重疊檢查」建立了複合索引，這直接提升了併發預約時的鎖定與查詢效率。</p>
                         </div>
                     </section>
                     
+                    <!-- Subslide 9.2: Query 效能分析 -->
                     <section>
-                        <h2>Query 效能分析</h2>
-                        <p>針對複雜的遞迴查詢 (Recursive CTE) 進行優化</p>
-                        <pre><code class="sql">
+                        <h2>Query 效能分析 (Explain Analyze)</h2>
+                        <p>優化遞迴查詢 (Recursive CTE)</p>
+                        <div class="container">
+                            <div class="col text-left">
+                                <pre><code class="sql" style="max-height: 400px; font-size: 0.8em;">
 EXPLAIN ANALYZE
 WITH RECURSIVE category_tree AS (
-    SELECT c_id FROM category WHERE c_id = :root_id
+    -- Anchor Member
+    SELECT c_id FROM category WHERE c_id = :root
     UNION ALL
-    SELECT c.c_id FROM category c ...
+    -- Recursive Member
+    SELECT c.c_id FROM category c
+    JOIN category_tree ct ON c.parent_c_id = ct.c_id
 )
 SELECT * FROM item ...
-                        </code></pre>
-                        <p class="small-text">優化後減少了 Seq Scan，有效利用 Index Scan</p>
+                                </code></pre>
+                            </div>
+                            <div class="col" style="display: flex; align-items: center; justify-content: center;">
+                                <ul style="font-size: 0.7em;">
+                                    <li><strong>優化前：</strong><br>Seq Scan on Category<br><span style="color: red;">Cost: High</span></li>
+                                    <br>
+                                    <li><strong>優化後：</strong><br>Index Scan using <code>idx_category_parent_c_id</code><br><span style="color: green;">Cost: Low (顯著下降)</span></li>
+                                </ul>
+                            </div>
+                        </div>
                     </section>
-				</section>
+                </section>
 
-                <!-- P7: 關鍵技術 -->
-				<section>
+                <!-- P7: 關鍵技術：交易與併行控制 (Live Demo) -->
+                <section>
+                    <!-- 主標題頁 -->
                     <section>
                         <h2>關鍵技術：交易與併行控制</h2>
                         <p>解決「超賣」與「Race Condition」問題</p>
+                        <p class="small-text">按 ↓ 查看技術細節與 Demo</p>
                     </section>
                     
+                    <!-- Subslide 7.1: Isolation Level & Locking -->
                     <section>
                         <h3>1. Isolation Level & Locking</h3>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>Isolation Level: SERIALIZABLE</strong>
+                                    <ul>
+                                        <li>PostgreSQL 最高隔離層級，確保交易如同序列執行。</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Pessimistic Locking (FOR UPDATE)</strong>
+                                    <ul>
+                                        <li>在檢查時段衝突時，先鎖定相關紀錄，防止其他交易修改。</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
                         <pre><code class="python" data-trim data-noescape>
 # reservation_service.py
+db.session.execute(text("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE"))
 
-# 1. 設定 Serializable 隔離層級
-db.session.execute(
-    text("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
-)
-
-# 2. 使用 FOR UPDATE 鎖定資源 (檢查時段重疊)
+# 使用 FOR UPDATE 鎖定資源
 session.execute(text("""
     SELECT rd.rd_id FROM reservation_detail rd
     WHERE rd.i_id = :i_id
@@ -474,6 +523,7 @@ session.execute(text("""
                         </code></pre>
                     </section>
 
+                    <!-- Subslide 7.2: 併行控制時序圖 -->
                     <section>
                         <h3>2. 併行控制時序圖</h3>
                         <div class="mermaid" style="height: 400px;">
@@ -482,57 +532,47 @@ session.execute(text("""
                                 participant DB as Database
                                 participant B as User B
                                 
-                                Note over A,B: 都想預約同一時段
-                                A->>DB: 1. Begin Transaction (Serializable)
-                                B->>DB: 2. Begin Transaction (Serializable)
-                                A->>DB: 3. Check Overlap (FOR UPDATE)
+                                Note over A,B: 搶訂同一時段
+                                A->>DB: 1. Begin Tx (Serializable)
+                                B->>DB: 2. Begin Tx (Serializable)
+                                A->>DB: 3. Check & Lock (FOR UPDATE)
                                 Note right of A: 獲得 Lock
-                                B->>DB: 4. Check Overlap (FOR UPDATE)
-                                Note right of B: 被 Block 住 (等待 Lock)
-                                A->>DB: 5. Insert Reservation
-                                A->>DB: 6. Commit
+                                B->>DB: 4. Check & Lock (FOR UPDATE)
+                                Note right of B: <span style="color:red">Blocked (Wait)</span>
+                                A->>DB: 5. Insert & Commit
                                 Note right of B: 解除 Block
-                                B->>DB: 7. Detected Conflict / Serialization Failure
-                                DB-->>B: Error: could not serialize access
+                                B->>DB: 6. Serialization Failure
+                                DB-->>B: Error / Retry
                         </div>
                     </section>
 
-                    <!-- P7.X: 併行控制 Demo -->
+                    <!-- Subslide 7.3: Concurrency Demo -->
                     <section>
-                        <h2>併行控制實測 (Demo)</h2>
-                        <div class="container">
-                            <div class="col" style="flex: 0.6;">
-                                <div class="demo-placeholder" style="border-color: #ff5e5e;">
-                                    <!-- 這裡放 video 標籤 -->
-                                    <h3>🎬 Concurrency Demo</h3>
-                                    <p>請在此處嵌入併行操作影片</p>
-                                    <p class="small-text">(兩個視窗同時預約同一時段)</p>
-                                </div>
-                            </div>
-                            <div class="col text-left" style="flex: 0.4; padding-left: 20px; font-size: 0.8em;">
-                                <ol>
-                                    <li class="fragment">
-                                        <strong>User A (左)</strong>：<br>
-                                        發送預約 -> <span style="color: green">獲得 Lock</span>
-                                    </li>
-                                    <li class="fragment">
-                                        <strong>User B (右)</strong>：<br>
-                                        發送預約 -> <span style="color: orange">被 Block (等待中)</span>
-                                    </li>
-                                    <li class="fragment">
-                                        <strong>結果</strong>：<br>
-                                        User A 成功 commit<br>
-                                        User B 偵測到衝突 -> <span style="color: red">失敗/Retry</span>
-                                    </li>
-                                </ol>
-                            </div>
+                        <h3>3. 併行控制實測 (Live Demo)</h3>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>場景：</strong>兩個使用者同時預約同一熱門物品的相同時段。</li>
+                                <li><strong>預期行為：</strong>
+                                    <ol>
+                                        <li>User A 先發送請求 ➔ <strong>獲得 Lock，成功預約</strong>。</li>
+                                        <li>User B 後發送請求 ➔ <strong>被 Block (等待)</strong>。</li>
+                                        <li>User A 結束後 ➔ User B 恢復執行，但<strong>偵測到衝突失敗</strong>。</li>
+                                    </ol>
+                                </li>
+                            </ul>
+                        </div>
+                        <br>
+                        <div style="border: 2px solid #ff5e5e; padding: 10px; border-radius: 10px; color: #ff5e5e;">
+                            <p>➔ 請演示：<strong>雙視窗搶票 (Concurrency Test)</strong></p>
                         </div>
                     </section>
                     
+                    <!-- Subslide 7.4: Retry Mechanism -->
                     <section>
-                        <h3>3. Retry Mechanism</h3>
+                        <h3>4. Retry Mechanism</h3>
+                        <p>處理 Serialization Failure 的自動重試</p>
                         <pre><code class="python" data-trim data-noescape>
-# item_service.py (update_item)
+# item_service.py
 max_retries = 3
 for attempt in range(max_retries):
     try:
@@ -546,7 +586,7 @@ for attempt in range(max_retries):
         raise e
                         </code></pre>
                     </section>
-				</section>
+                </section>
 
                 <!-- P8: 結尾 -->
 				<section>

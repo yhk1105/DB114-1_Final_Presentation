@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>校園閒置物品流通平台 - 資料庫期末報告</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/theme/black.min.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai.min.css">
+
+        <style>
+            .container { display: flex; }
+            .col { flex: 1; }
+            .text-left { text-align: left; }
+            .small-text { font-size: 0.6em; }
+            h1, h2, h3 { color: #42affa !important; }
+            .highlight-red { color: #ff5e5e; font-weight: bold; }
+            .mermaid { background: white; padding: 10px; border-radius: 8px; }
+            /* 影片佔位符樣式 */
+            .demo-placeholder {
+                border: 3px dashed #666;
+                background: rgba(255,255,255,0.1);
+                height: 400px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                border-radius: 10px;
+            }
+            .demo-placeholder p {
+                color: #aaa;
+            }
+        </style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+                
+                <!-- P1: 首頁 -->
+				<section>
+					<h1>校園閒置物品流通平台</h1>
+					<h3>資料庫管理期末專案</h3>
+					<p>
+						<small>組別：第 19 組</small>
+					</p>
+				</section>
+
+                <!-- P2: 專案動機與解決方案 -->
+				<section>
+                    <section>
+                        <h2>專案動機</h2>
+                        <div class="text-left">
+                            <ul>
+                                <li class="fragment"><strong>問題背景：</strong>
+                                    <ul>
+                                        <li>校園內常有短期需求的物品（如：活動道具、露營器材）。</li>
+                                        <li>購買昂貴且造成浪費，缺乏借用管道。</li>
+                                    </ul>
+                                </li>
+                                <li class="fragment"><strong>現有問題：</strong>
+                                    <ul>
+                                        <li>缺乏有效的物品流通機制</li>
+                                        <li>沒有信任基礎的借用平台</li>
+                                        <li>資源浪費與重複購買</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                    
+                    <section>
+                        <h2>解決方案</h2>
+                        <div class="text-left">
+                            <ul>
+                                <li class="fragment"><strong>核心特色：</strong>
+                                    <ul>
+                                        <li>建立具備<span class="highlight-red">實名制（需使用校內信箱註冊）</span>的借用平台</li>
+                                        <li>透過貢獻度系統鼓勵分享</li>
+                                        <li>完整的預約與借出流程管理</li>
+                                    </ul>
+                                </li>
+                                <li class="fragment"><strong>預期效益：</strong>
+                                    <ul>
+                                        <li>提升資源利用率</li>
+                                        <li>建立校園共享經濟生態</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+				</section>
+
+                <!-- P3: 系統架構 -->
+				<section>
+                    <section>
+                        <h2>系統架構</h2>
+                        <div class="r-stack">
+                            <div class="mermaid">
+                                graph LR
+                                    Client["Web Frontend (JS)"] -- HTTP/REST --> API["Backend API (Flask)"]
+                                    API --> PG[("PostgreSQL")]
+                                    API --> Mongo[("MongoDB")]
+                                    PG --- Core["核心交易資料"]
+                                    Mongo --- Log["Log & Funnel"]
+                                    style Client fill:#f9f,stroke:#333,stroke-width:2px
+                                    style API fill:#bbf,stroke:#333,stroke-width:2px
+                                    style PG fill:#dfd,stroke:#333,stroke-width:2px
+                                    style Mongo fill:#ffd,stroke:#333,stroke-width:2px
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section>
+                        <h2>技術棧說明</h2>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>前端：</strong> Web Frontend (JavaScript + HTML/CSS)</li>
+                                <li><strong>後端：</strong> Python Flask + SQLAlchemy</li>
+                                <li><strong>關聯式資料庫：</strong> PostgreSQL （儲存交易資料）</li>
+                                <li><strong>NoSQL 資料庫：</strong> MongoDB （儲存行為資料）</li>
+                            </ul>
+                        </div>
+                    </section>
+				</section>
+
+                <!-- P4: 系統功能展示 (過場) -->
+                <section>
+                    <h2>系統功能展示 (Live Demo)</h2>
+                    <p>請切換至系統畫面進行操作演示</p>
+                    <p>接下來將依序展示：</p>
+                    <ol>
+                        <li>一般使用者功能 (User)</li>
+                        <li>管理員與進階功能 (Staff)</li>
+                    </ol>
+                </section>
+
+                <!-- P5: User 功能展示 -->
+                <section>
+                    <!-- P5.1: 封面 -->
+                    <section>
+                        <h2>Part 1: 一般使用者功能 (User)</h2>
+                        <p>會員操作流程演示</p>
+                        <p class="small-text">按 ↓ 查看功能細節</p>
+                    </section>
+
+                    <!-- P5.2: 會員系統 -->
+                    <section>
+                        <h3>1. 會員與身份驗證</h3>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>註冊 (Registration)：</strong>
+                                    <ul>
+                                        <li>驗證校內信箱 (@ntu.edu.tw)</li>
+                                        <li>防止重複註冊</li>
+                                    </ul>
+                                </li>
+                                <li><strong>登入 (Login)：</strong>
+                                    <ul>
+                                        <li>JWT Token 發放與驗證</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <br>
+                        <div style="border: 2px solid #42affa; padding: 10px; border-radius: 10px; color: #42affa;">
+                            <p>➔ 請演示：<strong>註冊新帳號並登入</strong></p>
+                        </div>
+                    </section>
+
+                    <!-- P5.3: 瀏覽與搜尋 -->
+                    <section>
+                        <h3>2. 物品瀏覽與搜尋</h3>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>分類瀏覽：</strong>
+                                    <ul>
+                                        <li>支援多層級分類 (Recursive Categories)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>物品搜尋：</strong>
+                                    <ul>
+                                        <li>查看物品詳細資訊 (狀態、描述)</li>
+                                        <li>查看可取貨地點</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <br>
+                        <div style="border: 2px solid #42affa; padding: 10px; border-radius: 10px; color: #42affa;">
+                            <p>➔ 請演示：<strong>瀏覽分類與查看物品</strong></p>
+                        </div>
+                    </section>
+
+                    <!-- P5.4: 預約流程 -->
+                    <section>
+                        <h3>3. 預約與借用流程</h3>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>建立預約 (Reservation)：</strong>
+                                    <ul>
+                                        <li>選擇時段與取貨點</li>
+                                        <li>系統自動檢查時段衝突</li>
+                                    </ul>
+                                </li>
+                                <li><strong>我的預約：</strong>
+                                    <ul>
+                                        <li>查看當前預約狀態</li>
+                                        <li>取消預約 (24小時前)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <br>
+                        <div style="border: 2px solid #42affa; padding: 10px; border-radius: 10px; color: #42affa;">
+                            <p>➔ 請演示：<strong>成功預約一個物品</strong></p>
+                        </div>
+                    </section>
+
+                    <!-- P5.5: 物品管理與交易 -->
+                    <section>
+                        <h3>4. 物品管理與交易結算</h3>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>上架與管理：</strong>
+                                    <ul>
+                                        <li>設定物品資訊、綁定取貨點</li>
+                                        <li>累積貢獻度以解鎖借用權限</li>
+                                    </ul>
+                                </li>
+                                <li><strong>交易結算 (Punch In)：</strong>
+                                    <ul>
+                                        <li>物主確認已交付物品</li>
+                                        <li>系統自動建立借出紀錄 (Loan)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <br>
+                        <div style="border: 2px solid #42affa; padding: 10px; border-radius: 10px; color: #42affa;">
+                            <p>➔ 請演示：<strong>上架物品</strong> <br> <small>與 <strong>物主執行 Punch In (確認借出)</strong></small></p>
+                        </div>
+                    </section>
+                </section>
+
+                <!-- P6: Staff 功能展示 -->
+                <section>
+                    <!-- P6.1: 封面 -->
+                    <section>
+                        <h2>Part 2: 管理員後台 (Staff)</h2>
+                        <p>審核機制與檢舉處理</p>
+                        <p class="small-text">按 ↓ 查看功能細節</p>
+                    </section>
+
+                    <!-- P6.2: 審核與管理 -->
+                    <section>
+                        <h3>管理員審核機制</h3>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>身份切換與驗證：</strong>
+                                    <ul>
+                                        <li>統一登入入口 (選擇身份：Member / Staff)</li>
+                                        <li>系統後端驗證員工資格</li>
+                                    </ul>
+                                </li>
+                                <li><strong>物品審核 (Verification)：</strong>
+                                    <ul>
+                                        <li>審核新上架物品 (Pending ➔ Verified)</li>
+                                        <li>審核通過後，物主才可獲得貢獻度</li>
+                                    </ul>
+                                </li>
+                                <li><strong>檢舉處理 (Report)：</strong>
+                                    <ul>
+                                        <li>審核用戶的違規檢舉</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <br>
+                        <div style="border: 2px solid #42affa; padding: 10px; border-radius: 10px; color: #42affa;">
+                            <p>➔ 請演示：<strong>切換身份登入 Staff 並審核物品</strong></p>
+                        </div>
+                    </section>
+                </section>
+
+                <!-- P4: 資料庫設計 -->
+				<section>
+                    <section>
+                        <h2>資料庫設計 (ER Diagram)</h2>
+                        <p>核心表格：Member, Item, Reservation, Loan, Contribution</p>
+                        <div style="border: 2px dashed #666; padding: 20px;">
+                            <p>（請在此處放入你的 ER Diagram 圖片）</p>
+                        </div>
+                    </section>
+                    
+                    <section>
+                        <h2>核心 Table 關聯 - Member</h2>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>Member (會員)</strong> 是系統的核心實體</li>
+                                <li><strong>關聯：</strong>
+                                    <ul>
+                                        <li>Member 1 : N Item (擁有多個物品)</li>
+                                        <li>Member 1 : N Reservation (建立多個預約)</li>
+                                        <li>Member 1 : N Contribution (擁有多筆貢獻紀錄)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                    
+                    <section>
+                        <h2>核心 Table 關聯 - Item</h2>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>Item (物品)</strong></li>
+                                <li><strong>關聯：</strong>
+                                    <ul>
+                                        <li>Item N : 1 Member (擁有者)</li>
+                                        <li>Item N : 1 Category (分類)</li>
+                                        <li>Item 1 : N ReservationDetail (預約詳情)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                    
+                    <section>
+                        <h2>核心 Table 關聯 - Reservation & Loan</h2>
+                        <div class="mermaid">
+                            graph TD
+                                R["Reservation"] -->|1:N| RD["ReservationDetail"]
+                                RD -->|N:1| I["Item"]
+                                R -->|1:1| L["Loan"]
+                                L -->|Ref| RD
+                                style R fill:#f96,stroke:#333
+                                style L fill:#69f,stroke:#333
+                        </div>
+                        <p class="small-text">ReservationDetail 負責處理具體的時段衝突 (Time Overlap)</p>
+                    </section>
+				</section>
+
+                <!-- P5: NoSQL 的應用 -->
+				<section>
+                    <section>
+                        <h2>NoSQL 的應用 (MongoDB)</h2>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>為何選擇 MongoDB？</strong>
+                                    <ul>
+                                        <li>Schema-less: 彈性記錄各種事件</li>
+                                        <li>High Write Throughput: 適合大量日誌寫入</li>
+                                    </ul>
+                                </li>
+                                <li><strong>資料分流：</strong>
+                                    <ul>
+                                        <li>PostgreSQL: ACID 交易 (預約、庫存)</li>
+                                        <li>MongoDB: Analytics (使用者行為、系統日誌)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                    
+                    <section>
+                        <h2>Funnel Tracker 設計</h2>
+                        <div class="container">
+                            <div class="col">
+                                <div class="mermaid">
+                                    graph TD
+                                        A["瀏覽分類"] -->|轉化| B["查看物品"]
+                                        B -->|轉化| C["檢查可用性"]
+                                        C -->|轉化| D["建立預約"]
+                                        D -->|完成| E["預約成功"]
+                                </div>
+                            </div>
+                            <div class="col">
+                                <pre><code class="json" data-trim data-noescape>
+{
+  "session_id": "sess_123",
+  "events": [
+    {
+      "event": "view_item",
+      "item_id": 55,
+      "timestamp": "..."
+    }
+  ],
+  "funnel_stage": "view_item"
+}
+                                </code></pre>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section>
+                        <h2>Log 系統設計</h2>
+                        <pre><code class="python">
+# funnel_tracker.py
+def log_event(event_type, ...):
+    db.user_sessions.update_one(
+        {"session_id": session_id},
+        {"$push": {"events": event}}
+    )
+                        </code></pre>
+                    </section>
+				</section>
+
+                <!-- P6: 資料庫優化 -->
+				<section>
+                    <section>
+                        <h2>資料庫優化與索引</h2>
+                        <div class="text-left">
+                            <ul>
+                                <li><strong>關鍵索引 (setindex.sql)：</strong></li>
+                            </ul>
+                            <pre><code class="sql" data-trim data-noescape>
+-- 加速時段衝突檢查 (Overlap Check)
+CREATE INDEX idx_reservation_detail_time_range 
+ON reservation_detail(i_id, est_start_at, est_due_at);
+
+-- 加速分類遞迴查詢
+CREATE INDEX idx_category_parent_c_id ON category(parent_c_id);
+
+-- 加速我的預約查詢
+CREATE INDEX idx_reservation_m_id ON reservation(m_id);
+                            </code></pre>
+                        </div>
+                    </section>
+                    
+                    <section>
+                        <h2>Query 效能分析</h2>
+                        <p>針對複雜的遞迴查詢 (Recursive CTE) 進行優化</p>
+                        <pre><code class="sql">
+EXPLAIN ANALYZE
+WITH RECURSIVE category_tree AS (
+    SELECT c_id FROM category WHERE c_id = :root_id
+    UNION ALL
+    SELECT c.c_id FROM category c ...
+)
+SELECT * FROM item ...
+                        </code></pre>
+                        <p class="small-text">優化後減少了 Seq Scan，有效利用 Index Scan</p>
+                    </section>
+				</section>
+
+                <!-- P7: 關鍵技術 -->
+				<section>
+                    <section>
+                        <h2>關鍵技術：交易與併行控制</h2>
+                        <p>解決「超賣」與「Race Condition」問題</p>
+                    </section>
+                    
+                    <section>
+                        <h3>1. Isolation Level & Locking</h3>
+                        <pre><code class="python" data-trim data-noescape>
+# reservation_service.py
+
+# 1. 設定 Serializable 隔離層級
+db.session.execute(
+    text("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
+)
+
+# 2. 使用 FOR UPDATE 鎖定資源 (檢查時段重疊)
+session.execute(text("""
+    SELECT rd.rd_id FROM reservation_detail rd
+    WHERE rd.i_id = :i_id
+    AND ((rd.est_start_at, rd.est_due_at) OVERLAPS (:start, :end))
+    FOR UPDATE OF rd
+"""))
+                        </code></pre>
+                    </section>
+
+                    <section>
+                        <h3>2. 併行控制時序圖</h3>
+                        <div class="mermaid" style="height: 400px;">
+                            sequenceDiagram
+                                participant A as User A
+                                participant DB as Database
+                                participant B as User B
+                                
+                                Note over A,B: 都想預約同一時段
+                                A->>DB: 1. Begin Transaction (Serializable)
+                                B->>DB: 2. Begin Transaction (Serializable)
+                                A->>DB: 3. Check Overlap (FOR UPDATE)
+                                Note right of A: 獲得 Lock
+                                B->>DB: 4. Check Overlap (FOR UPDATE)
+                                Note right of B: 被 Block 住 (等待 Lock)
+                                A->>DB: 5. Insert Reservation
+                                A->>DB: 6. Commit
+                                Note right of B: 解除 Block
+                                B->>DB: 7. Detected Conflict / Serialization Failure
+                                DB-->>B: Error: could not serialize access
+                        </div>
+                    </section>
+
+                    <!-- P7.X: 併行控制 Demo -->
+                    <section>
+                        <h2>併行控制實測 (Demo)</h2>
+                        <div class="container">
+                            <div class="col" style="flex: 0.6;">
+                                <div class="demo-placeholder" style="border-color: #ff5e5e;">
+                                    <!-- 這裡放 video 標籤 -->
+                                    <h3>🎬 Concurrency Demo</h3>
+                                    <p>請在此處嵌入併行操作影片</p>
+                                    <p class="small-text">(兩個視窗同時預約同一時段)</p>
+                                </div>
+                            </div>
+                            <div class="col text-left" style="flex: 0.4; padding-left: 20px; font-size: 0.8em;">
+                                <ol>
+                                    <li class="fragment">
+                                        <strong>User A (左)</strong>：<br>
+                                        發送預約 -> <span style="color: green">獲得 Lock</span>
+                                    </li>
+                                    <li class="fragment">
+                                        <strong>User B (右)</strong>：<br>
+                                        發送預約 -> <span style="color: orange">被 Block (等待中)</span>
+                                    </li>
+                                    <li class="fragment">
+                                        <strong>結果</strong>：<br>
+                                        User A 成功 commit<br>
+                                        User B 偵測到衝突 -> <span style="color: red">失敗/Retry</span>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section>
+                        <h3>3. Retry Mechanism</h3>
+                        <pre><code class="python" data-trim data-noescape>
+# item_service.py (update_item)
+max_retries = 3
+for attempt in range(max_retries):
+    try:
+        # ... 執行交易 ...
+        db.session.commit()
+        break
+    except OperationalError as e:
+        if "could not serialize" in str(e):
+            time.sleep(0.1 * (attempt + 1)) # Exponential Backoff
+            continue
+        raise e
+                        </code></pre>
+                    </section>
+				</section>
+
+                <!-- P8: 結尾 -->
+				<section>
+                    <section>
+                        <h2>分工與心得</h2>
+                        <ul>
+                            <li><strong>分工：</strong>
+                                <ul>
+                                    <li>Backend & DB Schema</li>
+                                    <li>Frontend & MongoDB Integration</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </section>
+                    
+                    <section>
+                        <h2>遇到的困難</h2>
+                        <ul>
+                            <li><strong>PostgreSQL Serialization Failure：</strong>
+                                <br>在高併發下頻繁失敗，透過 Retry 機制解決。
+                            </li>
+                            <li><strong>複雜的時段重疊邏輯：</strong>
+                                <br>使用 SQL `OVERLAPS` 運算子簡化判斷。
+                            </li>
+                        </ul>
+                    </section>
+                    
+                    <section>
+                        <h2>Thank You</h2>
+                        <p>Q & A</p>
+                    </section>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/notes/notes.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/markdown/markdown.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/highlight/highlight.min.js"></script>
+        <!-- 引入 Mermaid.js -->
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+		<script>
+			Reveal.initialize({
+				hash: true,
+                slideNumber: true,
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+            
+            // 初始化 Mermaid
+            mermaid.initialize({ startOnLoad: true, theme: 'default' });
+		</script>
+	</body>
+</html>

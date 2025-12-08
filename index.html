@@ -43,7 +43,7 @@
                 
                 <!-- P1: 首頁 -->
 				<section>
-					<h1>校園閒置物品流通平台</h1>
+					<h1 style="font-size: 1.8em;">Our things - 校園閒置物品流通平台</h1>
 					<h3>資料庫管理期末專案</h3>
 					<p>
 						<small>組別：第 19 組</small>
@@ -100,18 +100,7 @@
                     <section>
                         <h2>系統架構</h2>
                         <div class="r-stack">
-                            <div class="mermaid">
-                                graph LR
-                                    Client["Web Frontend (JS)"] -- HTTP/REST --> API["Backend API (Flask)"]
-                                    API --> PG[("PostgreSQL")]
-                                    API --> Mongo[("MongoDB")]
-                                    PG --- Core["核心交易資料"]
-                                    Mongo --- Log["Log & Funnel"]
-                                    style Client fill:#f9f,stroke:#333,stroke-width:2px
-                                    style API fill:#bbf,stroke:#333,stroke-width:2px
-                                    style PG fill:#dfd,stroke:#333,stroke-width:2px
-                                    style Mongo fill:#ffd,stroke:#333,stroke-width:2px
-                            </div>
+                            <img src="images/architecture.png" alt="Architecture" style="width: 100%; height: 100%;">
                         </div>
                     </section>
                     
@@ -119,10 +108,10 @@
                         <h2>技術棧說明</h2>
                         <div class="text-left">
                             <ul>
-                                <li><strong>前端：</strong> Web Frontend (JavaScript + HTML/CSS)</li>
+                                <li><strong>前端：</strong> Web Frontend （JavaScript + HTML/CSS）</li>
                                 <li><strong>後端：</strong> Python Flask + SQLAlchemy</li>
                                 <li><strong>關聯式資料庫：</strong> PostgreSQL （儲存交易資料）</li>
-                                <li><strong>NoSQL 資料庫：</strong> MongoDB （儲存行為資料）</li>
+                                <li><strong>NoSQL 資料庫：</strong> MongoDB （儲存使用者行為紀錄）</li>
                             </ul>
                         </div>
                     </section>
@@ -131,7 +120,6 @@
                 <!-- P4: 系統功能展示 (過場) -->
                 <section>
                     <h2>系統功能展示 (Live Demo)</h2>
-                    <p>請切換至系統畫面進行操作演示</p>
                     <p>接下來將依序展示：</p>
                     <ol>
                         <li>一般使用者功能 (User)</li>
@@ -143,9 +131,8 @@
                 <section>
                     <!-- P5.1: 封面 -->
                     <section>
-                        <h2>Part 1: 一般使用者功能 (User)</h2>
+                        <h2>Part 1: 一般使用者功能 (Member)</h2>
                         <p>會員操作流程演示</p>
-                        <p class="small-text">按 ↓ 查看功能細節</p>
                     </section>
 
                     <!-- P5.2: 會員系統 -->
@@ -153,22 +140,18 @@
                         <h3>1. 會員與身份驗證</h3>
                         <div class="text-left">
                             <ul>
-                                <li><strong>註冊 (Registration)：</strong>
+                                <li><strong>註冊：</strong>
                                     <ul>
                                         <li>驗證校內信箱 (@ntu.edu.tw)</li>
                                         <li>防止重複註冊</li>
                                     </ul>
                                 </li>
-                                <li><strong>登入 (Login)：</strong>
+                                <li><strong>登入：</strong>
                                     <ul>
                                         <li>JWT Token 發放與驗證</li>
                                     </ul>
                                 </li>
                             </ul>
-                        </div>
-                        <br>
-                        <div style="border: 2px solid #42affa; padding: 10px; border-radius: 10px; color: #42affa;">
-                            <p>➔ 請演示：<strong>註冊新帳號並登入</strong></p>
                         </div>
                     </section>
 
@@ -179,20 +162,17 @@
                             <ul>
                                 <li><strong>分類瀏覽：</strong>
                                     <ul>
-                                        <li>支援多層級分類 (Recursive Categories)</li>
+                                        <li>多層級分類</li>
                                     </ul>
                                 </li>
                                 <li><strong>物品搜尋：</strong>
                                     <ul>
-                                        <li>查看物品詳細資訊 (狀態、描述)</li>
-                                        <li>查看可取貨地點</li>
+                                        <li>查看物品詳細資訊 (狀態、描述、可借用時長)</li>
+                                        <li>加入借用列表</li>
+                                        <li>檢舉物品</li>
                                     </ul>
                                 </li>
                             </ul>
-                        </div>
-                        <br>
-                        <div style="border: 2px solid #42affa; padding: 10px; border-radius: 10px; color: #42affa;">
-                            <p>➔ 請演示：<strong>瀏覽分類與查看物品</strong></p>
                         </div>
                     </section>
 
@@ -201,7 +181,7 @@
                         <h3>3. 預約與借用流程</h3>
                         <div class="text-left">
                             <ul>
-                                <li><strong>建立預約 (Reservation)：</strong>
+                                <li><strong>建立預約：</strong>
                                     <ul>
                                         <li>選擇時段與取貨點</li>
                                         <li>系統自動檢查時段衝突</li>
@@ -209,15 +189,11 @@
                                 </li>
                                 <li><strong>我的預約：</strong>
                                     <ul>
-                                        <li>查看當前預約狀態</li>
-                                        <li>取消預約 (24小時前)</li>
+                                        <li>查看未來預約狀態</li>
+                                        <li>取消預約（24小時前）</li>
                                     </ul>
                                 </li>
                             </ul>
-                        </div>
-                        <br>
-                        <div style="border: 2px solid #42affa; padding: 10px; border-radius: 10px; color: #42affa;">
-                            <p>➔ 請演示：<strong>成功預約一個物品</strong></p>
                         </div>
                     </section>
 
@@ -228,8 +204,8 @@
                             <ul>
                                 <li><strong>上架與管理：</strong>
                                     <ul>
-                                        <li>設定物品資訊、綁定取貨點</li>
-                                        <li>累積貢獻度以解鎖借用權限</li>
+                                        <li>設定物品資訊、取貨點</li>
+                                        <li>累積貢獻度以獲得相同跟類別物品借用資格</li>
                                     </ul>
                                 </li>
                                 <li><strong>交易打卡：</strong>
@@ -241,10 +217,6 @@
                                 </li>
                             </ul>
                         </div>
-                        <br>
-                        <div style="border: 2px solid #42affa; padding: 10px; border-radius: 10px; color: #42affa;">
-                            <p>➔ 請演示：<strong>上架物品</strong> <br> <small>與 <strong>物主執行 Punch In (確認借出)</strong></small></p>
-                        </div>
                     </section>
                 </section>
 
@@ -254,7 +226,6 @@
                     <section>
                         <h2>Part 2: 管理員後台 (Staff)</h2>
                         <p>審核機制與檢舉處理</p>
-                        <p class="small-text">按 ↓ 查看功能細節</p>
                     </section>
 
                     <!-- P6.2: 審核與管理 -->
@@ -262,28 +233,24 @@
                         <h3>管理員審核機制</h3>
                         <div class="text-left">
                             <ul>
-                                <li><strong>身份切換與驗證：</strong>
+                                <li><strong>登入：</strong>
                                     <ul>
-                                        <li>統一登入入口 (選擇身份：Member / Staff)</li>
-                                        <li>系統後端驗證員工資格</li>
+                                        <li>相同登入入口 (選擇身份：Member / Staff)</li>
+                                        <li>系統後端驗證身分</li>
                                     </ul>
                                 </li>
-                                <li><strong>物品審核 (Verification)：</strong>
+                                <li><strong>物品審核：</strong>
                                     <ul>
                                         <li>審核新上架物品 (Pending ➔ Verified)</li>
                                         <li>審核通過後，物主才可獲得貢獻度</li>
                                     </ul>
                                 </li>
-                                <li><strong>檢舉處理 (Report)：</strong>
+                                <li><strong>檢舉處理：</strong>
                                     <ul>
-                                        <li>審核用戶的違規檢舉</li>
+                                        <li>審核用戶的違規檢舉（Withdraw / Ban Category / Delist）</li>
                                     </ul>
                                 </li>
                             </ul>
-                        </div>
-                        <br>
-                        <div style="border: 2px solid #42affa; padding: 10px; border-radius: 10px; color: #42affa;">
-                            <p>➔ 請演示：<strong>切換身份登入 Staff 並審核物品</strong></p>
                         </div>
                     </section>
                 </section>
@@ -293,21 +260,19 @@
                     <section>
                         <h2>資料庫設計 (ER Diagram)</h2>
                         <p>核心表格：Member, Item, Reservation, Loan, Contribution</p>
-                        <div style="border: 2px dashed #666; padding: 20px;">
-                            <p>（請在此處放入你的 ER Diagram 圖片）</p>
-                        </div>
+<img src="images/ER.png" alt="ER Diagram" style="width: 100%; height: 80%;">
                     </section>
                     
                     <section>
                         <h2>核心 Table 關聯 - Member</h2>
                         <div class="text-left">
                             <ul>
-                                <li><strong>Member (會員)</strong> 是系統的核心實體</li>
+                                <li><strong>Member （會員）</strong></li>
                                 <li><strong>關聯：</strong>
                                     <ul>
-                                        <li>Member 1 : N Item (擁有多個物品)</li>
-                                        <li>Member 1 : N Reservation (建立多個預約)</li>
-                                        <li>Member 1 : N Contribution (擁有多筆貢獻紀錄)</li>
+                                        <li>Member 1 : N Item （物品）</li>
+                                        <li>Member 1 : N Reservation （預約單）</li>
+                                        <li>Member 1 : N Contribution （貢獻紀錄）</li>
                                     </ul>
                                 </li>
                             </ul>
@@ -318,12 +283,12 @@
                         <h2>核心 Table 關聯 - Item</h2>
                         <div class="text-left">
                             <ul>
-                                <li><strong>Item (物品)</strong></li>
+                                <li><strong>Item （物品）</strong></li>
                                 <li><strong>關聯：</strong>
                                     <ul>
-                                        <li>Item N : 1 Member (擁有者)</li>
-                                        <li>Item N : 1 Category (分類)</li>
-                                        <li>Item 1 : N ReservationDetail (預約詳情)</li>
+                                        <li>Item N : 1 Member （物品擁有者）</li>
+                                        <li>Item N : 1 Category （物品分類）</li>
+                                        <li>Item 1 : N Reservation_Detail （預約明細）</li>
                                     </ul>
                                 </li>
                             </ul>
@@ -331,36 +296,38 @@
                     </section>
                     
                     <section>
-                        <h2>核心 Table 關聯 - Reservation & Loan</h2>
-                        <div class="mermaid">
-                            graph TD
-                                R["Reservation"] -->|1:N| RD["ReservationDetail"]
-                                RD -->|N:1| I["Item"]
-                                R -->|1:1| L["Loan"]
-                                L -->|Ref| RD
-                                style R fill:#f96,stroke:#333
-                                style L fill:#69f,stroke:#333
+                        <h2>核心 Table 關聯 - 預約單相關</h2>
+                        <div class="text-left">
+                        <ul>
+                            <li><strong>Reservation & Reservation_Detail & Loan</strong></li>
+                                <li><strong>關聯：</strong>
+                        <ul>
+                            <li>Reservation N:1 Reservation_Detail （預約明細）</li>
+                            <li>Reservation_Detail 1:1 Item （物品）</li>
+                            <li>Reservation_Detail 1:1 Loan （借用單）</li>
+                        </ul>
+                        <li>Reservation_Detail 負責處理時段衝突</li>
+                        </ul>
                         </div>
-                        <p class="small-text">ReservationDetail 負責處理具體的時段衝突 (Time Overlap)</p>
                     </section>
 				</section>
 
                 <!-- P5: NoSQL 的應用 -->
 				<section>
                     <section>
-                        <h2>NoSQL 的應用 (MongoDB)</h2>
+                        <h2>NoSQL 應用（MongoDB）</h2>
                         <div class="text-left">
                             <ul>
                                 <li><strong>為何選擇 MongoDB？</strong>
                                     <ul>
-                                        <li>Schema-less: 彈性記錄各種事件</li>
-                                        <li>High Write Throughput: 適合大量日誌寫入</li>
+                                        <li>Schema-less：彈性記錄使用者行為</li>
+                                        <li>High Write Throughput：大量使用者行為資料寫入</li>
                                     </ul>
                                 </li>
                                 <li><strong>資料分流：</strong>
                                     <ul>
-                                        <li>PostgreSQL: ACID 交易 (預約、庫存)</li>
-                                        <li>MongoDB: Analytics (使用者行為、系統日誌)</li>
+                                        <li>PostgreSQL：ACID 交易（預約、庫存、借用）</li>
+                                        <li>MongoDB：Analytics（紀錄使用者行為、漏斗圖分析）</li>
                                     </ul>
                                 </li>
                             </ul>
@@ -380,14 +347,19 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <pre><code class="json" data-trim data-noescape>
+                                <pre style="margin-top: 60px;"><code class="json" data-trim data-noescape style="font-size: 0.8em; line-height: 1.2;">
 {
   "session_id": "sess_123",
+  "user_token": "...",
   "events": [
+    {...},
     {
-      "event": "view_item",
-      "item_id": 55,
-      "timestamp": "..."
+      "event_type": "browse_category",
+      "timestamp": "...",
+      "endpoint":"/item/category/63",
+      "category_id": 63,
+      "success": true,
+      "error_reason": null
     }
   ],
   "funnel_stage": "view_item"
@@ -415,7 +387,6 @@ def log_event(event_type, ...):
                     <section>
                         <h2>資料庫優化與索引</h2>
                         <p>針對高頻查詢與複雜邏輯的優化策略</p>
-                        <p class="small-text">按 ↓ 查看詳細策略</p>
                     </section>
 
                     <!-- Subslide 9.1: 索引策略對照表 -->
@@ -424,26 +395,26 @@ def log_event(event_type, ...):
                         <table style="font-size: 0.6em;">
                             <thead>
                                 <tr>
-                                    <th>應用功能 (Feature)</th>
-                                    <th>查詢特徵 (Query Pattern)</th>
-                                    <th>建立索引 (Index)</th>
+                                    <th>應用</th>
+                                    <th>查詢</th>
+                                    <th>索引</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>預約防撞檢查</strong><br><small>(最關鍵的高頻查詢)</small></td>
-                                    <td><code>WHERE i_id = ?</code><br><code>AND (start, end) OVERLAPS ...</code></td>
+                                    <td><strong>預約時段衝突檢查</strong></td>
+                                    <td><code>WHERE i_id = ?</code><br><code>AND OVERLAPS ...</code></td>
                                     <td style="color: #42affa;"><strong>Compound Index</strong><br><code>(i_id, est_start_at, est_due_at)</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>分類瀏覽 (DFS)</strong><br><small>(遞迴查詢子類別)</small></td>
-                                    <td><code>JOIN ON parent_c_id</code><br>(Recursive CTE)</td>
-                                    <td style="color: #42affa;"><strong>Foreign Key Index</strong><br><code>(parent_c_id)</code></td>
+                                    <td><strong>分類瀏覽 & 物品檢索</strong></small></td>
+                                    <td><code>JOIN ON parent_c_id</code><br><code>WHERE c_id = ?</code></td>
+                                    <td style="color: #42affa;"><strong>FK Index</strong><br><code>category(parent_c_id)</code><br><code>item(c_id)</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>我的預約/物品</strong><br><small>(個人化頁面)</small></td>
-                                    <td><code>WHERE m_id = ?</code></td>
-                                    <td style="color: #42affa;"><strong>Foreign Key Index</strong><br><code>(m_id)</code></td>
+                                    <td><strong>個人評分 (Reviews)</strong></td>
+                                    <td><code>WHERE reviewee_id = ?</code><br><code>SELECT score, ...</code></td>
+                                    <td style="color: #42affa;"><strong>Covering Index</strong><br><code>INCLUDE (l_id, score, is_deleted)</code></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -455,28 +426,30 @@ def log_event(event_type, ...):
                     
                     <!-- Subslide 9.2: Query 效能分析 -->
                     <section>
-                        <h2>Query 效能分析 (Explain Analyze)</h2>
-                        <p>優化遞迴查詢 (Recursive CTE)</p>
+                        <h2>Query Plan 分析</h2>
+                        <p>優化遞迴查詢</p>
                         <div class="container">
                             <div class="col text-left">
-                                <pre><code class="sql" style="max-height: 400px; font-size: 0.8em;">
-EXPLAIN ANALYZE
+                                <pre><code class="sql" style="max-height: 400px; font-size: 0.7em;">
+EXPLAIN
 WITH RECURSIVE category_tree AS (
-    -- Anchor Member
-    SELECT c_id FROM category WHERE c_id = :root
+    SELECT c_id 
+    FROM category 
+    WHERE c_id = :root
     UNION ALL
-    -- Recursive Member
-    SELECT c.c_id FROM category c
-    JOIN category_tree ct ON c.parent_c_id = ct.c_id
+    SELECT c.c_id 
+    FROM category c
+    JOIN category_tree ct 
+        ON c.parent_c_id = ct.c_id
 )
 SELECT * FROM item ...
                                 </code></pre>
                             </div>
                             <div class="col" style="display: flex; align-items: center; justify-content: center;">
                                 <ul style="font-size: 0.7em;">
-                                    <li><strong>優化前：</strong><br>Seq Scan on Category<br><span style="color: red;">Cost: High</span></li>
+                                    <li><strong>優化前：</strong><br>Seq Scan on Category</li>
                                     <br>
-                                    <li><strong>優化後：</strong><br>Index Scan using <code>idx_category_parent_c_id</code><br><span style="color: green;">Cost: Low (顯著下降)</span></li>
+                                    <li><strong>優化後：</strong><br>Index Scan using <code>idx_category_parent_c_id</code><br><span style="color: green;">Cost 顯著下降</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -487,62 +460,87 @@ SELECT * FROM item ...
                 <section>
                     <!-- 主標題頁 -->
                     <section>
-                        <h2>關鍵技術：交易與併行控制</h2>
-                        <p>解決「超賣」與「Race Condition」問題</p>
-                        <p class="small-text">按 ↓ 查看技術細節與 Demo</p>
+                        <h2>交易與併行控制</h2>
+                        <p>交易時防止同時預約同一物品的相同時段，以及貢獻度修改時鎖定貢獻度紀錄</p>
                     </section>
                     
                     <!-- Subslide 7.1: Isolation Level & Locking -->
                     <section>
                         <h3>1. Isolation Level & Locking</h3>
-                        <div class="text-left">
-                            <ul>
-                                <li><strong>Isolation Level: SERIALIZABLE</strong>
-                                    <ul>
-                                        <li>PostgreSQL 最高隔離層級，確保交易如同序列執行。</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Pessimistic Locking (FOR UPDATE)</strong>
-                                    <ul>
-                                        <li>在檢查時段衝突時，先鎖定相關紀錄，防止其他交易修改。</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                        <pre><code class="python" data-trim data-noescape>
+                        <div class="container">
+                            <div class="col text-left" style="font-size: 0.8em;">
+                                <ul>
+                                    <li><strong>Isolation Level: SERIALIZABLE</strong>
+                                        <ul style="font-size: 0.8em; color: #aaa;">
+                                            <li>確保交易序列化執行，防止時段衝突</li>
+                                        </ul>
+                                    </li>
+                                    <li style="margin-top: 20px;"><strong>Pessimistic Locking (FOR UPDATE)</strong>
+                                        <ul style="font-size: 0.8em; color: #aaa;">
+                                            <li>鎖定貢獻度紀錄</li>
+                                            <li>防止重複使用貢獻度</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col">
+                                <pre><code class="python" data-trim data-noescape style="font-size: 0.6em; line-height: 1.2;">
 # reservation_service.py
-db.session.execute(text("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE"))
+db.session.execute(text("
+    SET TRANSACTION ISOLATION LEVEL SERIALIZABLE"))
 
-# 使用 FOR UPDATE 鎖定資源
+# 鎖定貢獻度紀錄 (防止併發修改)
 session.execute(text("""
-    SELECT rd.rd_id FROM reservation_detail rd
-    WHERE rd.i_id = :i_id
-    AND ((rd.est_start_at, rd.est_due_at) OVERLAPS (:start, :end))
-    FOR UPDATE OF rd
+    SELECT i_id FROM contribution
+    WHERE m_id = :m_id 
+    AND is_active = true
+    -- ... 其他條件 ...
+    FOR UPDATE OF contribution
 """))
-                        </code></pre>
+                                </code></pre>
+                            </div>
+                        </div>
                     </section>
 
                     <!-- Subslide 7.2: 併行控制時序圖 -->
                     <section>
                         <h3>2. 併行控制時序圖</h3>
-                        <div class="mermaid" style="height: 400px;">
-                            sequenceDiagram
-                                participant A as User A
-                                participant DB as Database
-                                participant B as User B
-                                
-                                Note over A,B: 搶訂同一時段
-                                A->>DB: 1. Begin Tx (Serializable)
-                                B->>DB: 2. Begin Tx (Serializable)
-                                A->>DB: 3. Check & Lock (FOR UPDATE)
-                                Note right of A: 獲得 Lock
-                                B->>DB: 4. Check & Lock (FOR UPDATE)
-                                Note right of B: <span style="color:red">Blocked (Wait)</span>
-                                A->>DB: 5. Insert & Commit
-                                Note right of B: 解除 Block
-                                B->>DB: 6. Serialization Failure
-                                DB-->>B: Error / Retry
+                        <div style="display: flex; gap: 20px;">
+                            <div class="col" style="flex: 1;">
+                                <div class="mermaid" style="font-size: 0.8em;">
+                                    sequenceDiagram
+                                        participant A as User A
+                                        participant DB as DB
+                                        participant B as User B
+                                        
+                                        Note over A,B: 1. 搶訂時段 (Serializable)
+                                        A->>DB: Begin Tx
+                                        B->>DB: Begin Tx
+                                        A->>DB: Check Overlap
+                                        B->>DB: Check Overlap
+                                        A->>DB: Insert & Commit
+                                        Note right of A: OK
+                                        B->>DB: Insert & Commit
+                                        Note right of B: ❌ Serialization Failure
+                                </div>
+                            </div>
+                            <div class="col" style="flex: 1;">
+                                <div class="mermaid" style="font-size: 0.8em;">
+                                    sequenceDiagram
+                                        participant A as User A
+                                        participant DB as DB
+                                        participant B as User B
+
+                                        Note over A,B: 2. 雙重花費 (Locking)
+                                        A->>DB: Select For Update
+                                        Note right of A: 🔒 Lock
+                                        B->>DB: Select For Update
+                                        Note right of B: 🛑 Wait
+                                        A->>DB: Update & Commit
+                                        Note right of B: 🔓 Unblock
+                                        B->>DB: Read (Active=F)
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -561,63 +559,13 @@ session.execute(text("""
                                 </li>
                             </ul>
                         </div>
-                        <br>
-                        <div style="border: 2px solid #ff5e5e; padding: 10px; border-radius: 10px; color: #ff5e5e;">
-                            <p>➔ 請演示：<strong>雙視窗搶票 (Concurrency Test)</strong></p>
-                        </div>
                     </section>
                     
-                    <!-- Subslide 7.4: Retry Mechanism -->
-                    <section>
-                        <h3>4. Retry Mechanism</h3>
-                        <p>處理 Serialization Failure 的自動重試</p>
-                        <pre><code class="python" data-trim data-noescape>
-# item_service.py
-max_retries = 3
-for attempt in range(max_retries):
-    try:
-        # ... 執行交易 ...
-        db.session.commit()
-        break
-    except OperationalError as e:
-        if "could not serialize" in str(e):
-            time.sleep(0.1 * (attempt + 1)) # Exponential Backoff
-            continue
-        raise e
-                        </code></pre>
-                    </section>
                 </section>
 
                 <!-- P8: 結尾 -->
 				<section>
-                    <section>
-                        <h2>分工與心得</h2>
-                        <ul>
-                            <li><strong>分工：</strong>
-                                <ul>
-                                    <li>Backend & DB Schema</li>
-                                    <li>Frontend & MongoDB Integration</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </section>
-                    
-                    <section>
-                        <h2>遇到的困難</h2>
-                        <ul>
-                            <li><strong>PostgreSQL Serialization Failure：</strong>
-                                <br>在高併發下頻繁失敗，透過 Retry 機制解決。
-                            </li>
-                            <li><strong>複雜的時段重疊邏輯：</strong>
-                                <br>使用 SQL `OVERLAPS` 運算子簡化判斷。
-                            </li>
-                        </ul>
-                    </section>
-                    
-                    <section>
                         <h2>Thank You</h2>
-                        <p>Q & A</p>
-                    </section>
 				</section>
 
 			</div>

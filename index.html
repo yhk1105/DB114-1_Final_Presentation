@@ -585,8 +585,29 @@ session.execute(text("""
 				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
 			});
             
-            // 初始化 Mermaid
-            mermaid.initialize({ startOnLoad: true, theme: 'default' });
+            // 修正 Mermaid 渲染衝突問題
+            // 1. 關閉自動渲染，避免對隱藏的 Slide 進行繪圖導致的寬度計算錯誤
+            mermaid.initialize({ startOnLoad: false, theme: 'default' });
+
+            // 2. 定義渲染函式：只渲染當前可見 Slide 內的圖表
+            function renderMermaid(slide) {
+                // 找出該 Slide 內尚未渲染過的 mermaid 區塊
+                var mermaidDivs = slide.querySelectorAll('.mermaid:not([data-processed="true"])');
+                if (mermaidDivs.length === 0) return;
+
+                // 根據 Mermaid 版本選擇渲染方式 (CDN 預設為最新版 v10+)
+                if (typeof mermaid.run === 'function') {
+                    mermaid.run({ nodes: mermaidDivs });
+                } else {
+                    mermaid.init(undefined, mermaidDivs);
+                }
+            }
+
+            // 3. 監聽 Reveal.js 事件
+            // 當簡報載入完成時 (針對重新整理時所在的當下頁面)
+            Reveal.on('ready', event => renderMermaid(event.currentSlide));
+            // 當切換投影片時
+            Reveal.on('slidechanged', event => renderMermaid(event.currentSlide));
 		</script>
 	</body>
 </html>

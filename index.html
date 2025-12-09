@@ -546,15 +546,16 @@ session.execute(text("""
 
                     <!-- Subslide 7.3: Concurrency Demo -->
                     <section>
-                        <h3>3. 併行控制實測 (Live Demo)</h3>
+                        <h3>3. 交易控制實測 (Live Demo)</h3>
                         <div class="text-left">
                             <ul>
                                 <li><strong>場景：</strong>兩個使用者同時預約同一熱門物品的相同時段。</li>
-                                <li><strong>預期行為：</strong>
+                                <li><strong>預期行為 (Serializable Isolation)：</strong>
                                     <ol>
-                                        <li>User A 先發送請求 ➔ <strong>獲得 Lock，成功預約</strong>。</li>
-                                        <li>User B 後發送請求 ➔ <strong>被 Block (等待)</strong>。</li>
-                                        <li>User A 結束後 ➔ User B 恢復執行，但<strong>偵測到衝突失敗</strong>。</li>
+                                        <li>User A 與 User B 同時查詢時段，皆顯示可用。</li>
+                                        <li>User A 先完成預約並 Commit。</li>
+                                        <li>User B 嘗試提交時，資料庫偵測到 <strong>Serialization Failure</strong>。</li>
+                                        <li>User B 的交易被系統<strong>Rollback</strong>，預約失敗。</li>
                                     </ol>
                                 </li>
                             </ul>
